@@ -21,6 +21,7 @@ Container management:
 	docker container run -p 80:80 -d --name web nginx -- the same as previous
 	docker container run -d -p 3306:3306 --name db -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql
 	docker container stop <name>
+	docker stop -t 0 <name> - adding the option to wait zero seconds before terminating the container
 	docker container start <name>
 	docker container ls -a -- show all running/stoped containers
 	docker container rm -f <name> -- use force to delete running containers
@@ -35,9 +36,11 @@ Container management:
 		- we changed the dafault nginx command (from image) to bash, the container will stop if we exit from the shell
 	docker container run -it --name ubuntu ubuntu - it's default CMD is bash, so we don't have to specify it
 	docker container start -ai ubuntu - start existing container
+	docker run ubuntu:14.04 /bin/cat /etc/issue.net
 	docker container exec -it mysql bash -- run additional command in existing container
 	docker pull alpine
 	docker image ls
+	docker logs -f <name>
 
 Docker Networks:
 	each container connected to a private virtual network "bridge"
@@ -49,4 +52,4 @@ Docker Networks:
 	
 	docker container port <name> - quick port check
 	docker contaimer inspect <name>
-			
+	
