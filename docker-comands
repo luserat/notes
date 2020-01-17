@@ -25,6 +25,8 @@ Container management:
 	docker container start <name>
 	docker container ls -a -- show all running/stoped containers
 	docker container rm -f <name> -- use force to delete running containers
+	docker container rm $(docker container ls -a -q) -- delete all containers
+	docker contaimer inspect <name> -- inspect a container
 	docker container top <name> - show processes inside container
 	docker container stats -- performance stats for all containers
 	docker container inspect <name> -- see how container configured
@@ -37,19 +39,44 @@ Container management:
 	docker container run -it --name ubuntu ubuntu - it's default CMD is bash, so we don't have to specify it
 	docker container start -ai ubuntu - start existing container
 	docker run ubuntu:14.04 /bin/cat /etc/issue.net
+	docker container run --rm -it ubuntu bash -- delete container after
 	docker container exec -it mysql bash -- run additional command in existing container
-	docker pull alpine
-	docker image ls
 	docker logs -f <name>
 
-Docker Networks:
+Docker Networks Basics:
 	each container connected to a private virtual network "bridge"
 	each virtual network routes through NAT firewall on host IP
 	all containers on a virtual network can talk to each other without -p
 	best practice is to create a new virtual network for each app:
-		- network "my_web_app" for mysql and php/apache containers
-		- network "my_api" for mongo and nodejs containers
 	
+	docker network ls -- show networks
+	docker network inspect -- inspect a network
+	docker network create --driver -- create a network
+		- bridge -- default docker virtual network, which is NAT'ed behind the Host IP
+		- host -- It gains performance by skipping virtual networks but sacrifices security of container model
+		attaching container directly to Host interface
+		- none -- removes eth0 and only leaves you with localhost interface in container
+	docker network connect -- attach a network to container
+	docker network disconnect -- detach a network from container
+	docker container run -p 8080:80 -d --network prime --name prime nginx -- create container with specific network
 	docker container port <name> - quick port check
-	docker contaimer inspect <name>
-	
+
+Docker Networks DNS:
+	Forget IP's. Static IP's and using IP's for talking to containers is an antipatern. Do your best to avoid it.
+	Docker daemon has a built-in DNS server that containers use by default.	
+	Docker defaults the hostname to the container's name, but you can also set aliases.
+	Default bridge network doesn't have built in DNS server.	
+	--net-alias -- when creating containers to give them an additional DNS name to respond to
+	docker container run -d --network max_net --name max_search2 --net-alias search elasticsearch:2
+	docker container run --rm --network max_net alpine nslookup search
+
+Docker images:
+	a container is just a single read/write layer on top of image
+	each layer is uniquely identified and only stored once on a host
+	this saves storage space on host and transfer time on push/pull	
+
+	docker image ls
+	docker pull alpine
+	docker image history <image-name> -- history of image layers
+	docker image inspect <image-name>
+	docker image tag -- assign one or more tags to an image
