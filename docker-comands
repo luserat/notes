@@ -79,4 +79,14 @@ Docker images:
 	docker pull alpine
 	docker image history <image-name> -- history of image layers
 	docker image inspect <image-name>
-	docker image tag -- assign one or more tags to an image
+	docker image tag nginx lasergun/nginx -- assign one or more tags to an image
+		"latest" tag is just the default tag, image owners should assign it to the newest stable version
+	docker image push -- upload changed layers to a image registry (default is Hub)
+	docker login <server> -- defaults to loggin in Hub, but you can override by adding server url 
+	docker logout -- always logout from shared machines or servers when done, to protect your account
+
+Dockerfile:
+	ENV -- environment variables, to inject key/value, they work everywhere, on every OS and config
+	
+	docker image build -t customimage .
+	docker image build -f some-dockerfile
